@@ -1,0 +1,12 @@
+<img ng-src="{{result.entity.avatar_url}}" ng-if="result.entity.avatar_url != 'null'"/>
+
+<div class="info">
+
+    <h2 class="title">{{result.entity.first_name}}  {{result.entity.full_name}}</h2>
+
+    <p class="desc" ng-if="result.entity.verified == 'true'"><i class="fa fa-check-square"></i> verified</p>
+    <ul>
+        <li>Followers : {{result.entity.followers_count}}<span class="fa fa-users"></span></li>
+        <li>Track Count : {{result.entity.track_count}}<span class="fa fa-music"></span></li>
+    </ul>
+</div>

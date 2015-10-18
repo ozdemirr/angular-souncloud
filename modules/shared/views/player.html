@@ -1,0 +1,22 @@
+<div class="audiowrap">
+    <button class="btn btn-xs btn-default" ng-click="play()">
+        <i class="fa fa-play fa-4x"></i>
+    </button>
+    <button class="btn btn-xs btn-default" ng-click="pause()">
+        <i class="fa fa-pause fa-4x"></i>
+    </button>
+    <div class="time">{{ctime | secondsToDateTime | date:'mm:ss'}} / {{ duration | secondsToDateTime | date:'mm:ss'}}</div>
+    <div class="volwrap" ng-click="mute()">
+        <img src="assets/img/0.png" ng-if="vol == 0.0">
+        <img src="assets/img/33.png" ng-if="vol > 0.0 && vol <= 0.33">
+        <img src="assets/img/66.png" ng-if="vol > 0.33 && vol <= 0.66">
+        <img src="assets/img/100.png" ng-if="vol > 0.66">
+        <img src="assets/img/mute.png" ng-if="vol < 0">
+        <div class="wrap2">
+            <input type="range" min="0.0" max="1.0" step="0.05" ng-model="vol" ng-change="changevol()">
+        </div>
+    </div>
+    <div class="rangewrap">
+        <input type="range" min="0.0" max="{{ duration }}" step="0.1" ng-model="ctime" ng-change="changetime()">
+    </div>
+</div>
