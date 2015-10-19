@@ -13,13 +13,13 @@ var app = angular.module('soundcloudApp', [
 ]);
 
 app.config(['soundcloudConfigProvider',function(soundcloudConfigProvider){
-    soundcloudConfigProvider.clientId = "73af668824672428bc5557162cf7b8cc";
+    soundcloudConfigProvider.clientId = "9a3c52983a5b588452e8ab35cce81fa9";
 }]);
 
 
 app.run(['$rootScope', '$cookies', 'souncloud','$state','$timeout',function($rootScope,$cookies,souncloud,$state,$timeout) {
-    $rootScope.clientId = "73af668824672428bc5557162cf7b8cc";
-    $rootScope.redirectUri = "http://localhost:63342/soundcloud/callback.html";
+    $rootScope.clientId = "9a3c52983a5b588452e8ab35cce81fa9";
+    $rootScope.redirectUri = "http://ozdemirr.github.io/angular-souncloud/callback.html";
 
     if($cookies.get('user')){
         var userJson = angular.fromJson($cookies.get('user'));
