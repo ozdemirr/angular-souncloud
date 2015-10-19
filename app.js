@@ -7,11 +7,35 @@ var app = angular.module('soundcloudApp', [
     'ngAnimate',
     'ngSanitize',
     'ui.router',
-    'ui.utils'
+    'ui.utils',
+    'ngCookies',
+    'user'
 ]);
 
-app.run(['$rootScope', function($rootScope) {
+app.config(['soundcloudConfigProvider',function(soundcloudConfigProvider){
+    soundcloudConfigProvider.clientId = "73af668824672428bc5557162cf7b8cc";
+}]);
+
+
+app.run(['$rootScope', '$cookies', 'souncloud','$state','$timeout',function($rootScope,$cookies,souncloud,$state,$timeout) {
     $rootScope.clientId = "73af668824672428bc5557162cf7b8cc";
+    $rootScope.redirectUri = "http://localhost:63342/soundcloud/callback.html";
+
+    if($cookies.get('user')){
+        var userJson = angular.fromJson($cookies.get('user'));
+        souncloud.userId = userJson.id;
+        souncloud.oauth_token = userJson.oauth_token;
+        $timeout(function() {
+            $state.go("stream");
+        });
+        souncloud.me()
+            .then(function(data){
+                $rootScope.user = data;
+                $rootScope.user.oauth_token = userJson.oauth_token;
+                $cookies.putObject("user", $rootScope.user);
+            });
+    }
+
 }]);
 
 app.directive('aplayer',function($interval) {

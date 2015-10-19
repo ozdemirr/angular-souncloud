@@ -1,0 +1,86 @@
+<div ng-controller="HeaderController" style="margin-bottom: 70px;">
+
+<nav class="navbar navbar-trans navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+            <a class="navbar-brand">Soundcloud</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+
+                <div class="col-sm-12 controls" style="margin-top:10px;" ng-if="!user">
+
+                    <a id="btn-fblogin" ng-if="!user" ng-href="https://soundcloud.com/connect?client_id={{clientId}}&redirect_uri={{redirectUri}}&response_type=code_and_token&scope=non-expiring&display=popup" class="btn btn-primary"> <i class="fa fa-soundcloud"></i> Login with Soundcloud</a>
+
+                </div>
+
+                <!--dropdown-->
+                <ul class="nav navbar-nav navbar-right" style="margin-right: 0px;" ng-show="user">
+
+                    <li dropdown is-open="status.isopen">
+
+                        <a href="#" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled" style="padding-top: 8px;padding-bottom: 6px;">
+                            <img ng-src="{{user.avatar_url}}" class="img-circle" style="width: 35px;margin-right: 10px;">
+                            <strong>{{user.username}}</strong>
+                            <span class="glyphicon glyphicon-chevron-down"></span>
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-user fa-fw"></i> Profile</a></li>
+                            <li><a ui-sref="likes()"><i class="fa fa-heart fa-fw"></i> Likes</a></li>
+                            <li><a href="#"><i class="fa fa-users fa-fw"></i> Following</a></li>
+                            <li class="divider"></li>
+                            <li><a ng-click="logOut()"><i class="i"></i> Log Out</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+                <!--dropdown-->
+
+            </ul>
+
+            <form class="navbar-form">
+                <div class="form-group" style="display:inline;">
+                    <div class="input-group" style="width: 70%;">
+                        <input type="text" class="form-control" ng-model="searchText" placeholder="deadmau5" ui-event=" { keypress: 'search()' } ">
+                        <span class="input-group-addon" ng-click="search()" id="searchButton"><span class="glyphicon glyphicon-search"></span> </span>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+</nav>
+
+    <div id="searchResults" ng-if="searchText">
+
+    <div class="col-md-10 col-md-offset-1" id="releated" ng-if="autoCompleteResult.queries[0]">
+
+        <code>Releated Searches:</code>
+
+        <ul id="queryList"><li ng-repeat="query in autoCompleteResult.queries" ng-click="changeSearchText(query.output)">{{query.output}}</li></ul>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-offset-2 col-sm-8">
+            <ul class="event-list">
+
+                <li ng-repeat="result in autoCompleteResult.results">
+
+                    <div ng-include="'modules/shared/views/user.html'" ng-if="result.kind == 'user'" ng-click="goToUser(result.entity.id)"></div>
+
+                    <div ng-include="'modules/shared/views/track.html'" ng-if="result.kind == 'track'"></div>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    </div>
+
+</div>

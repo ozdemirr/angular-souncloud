@@ -1,36 +1,18 @@
 var index = angular.module('index', []);
 
-    index.controller('IndexController', ['$rootScope', '$scope', 'souncloud',function($rootScope,$scope, souncloud){
+    index.controller('IndexController', ['$rootScope', '$scope', 'souncloud', '$stateParams','$cookies','$timeout','$state',function($rootScope,$scope, souncloud,$stateParams,$cookies,$timeout,$state){
 
-        $scope.search = function(){
-
-                souncloud.autoComplete($scope.searchText)
+        //oauth handle
+            if($stateParams.oauth_token){
+                souncloud.oauth_token = $stateParams.oauth_token;
+                souncloud.me()
                     .then(function(data){
-
-                        $scope.autoCompleteResult = data;
-
-                        $rootScope.tracks = data.results;
-
-                    })
-
-            };
-
-        $scope.changeSearchText = function(text){
-            $scope.searchText = text;
-            $scope.search();
-        };
-
-
-        $scope.playTrack = function(track){
-
-            $rootScope.track = new Object();
-
-            souncloud.getTrackDetails(track.id)
-                .then(function(data){
-                    $rootScope.track.waveform = data.waveform_url;
-                });
-
-            $rootScope.track.url = souncloud.getTrackStreamLink(track);
-        };
+                        $rootScope.user = data;
+                        souncloud.userId = data.id;
+                        $rootScope.user.oauth_token = $stateParams.oauth_token;
+                        $cookies.putObject("user", $rootScope.user);
+                        $state.go("stream");
+                    });
+            }
 
     }]);

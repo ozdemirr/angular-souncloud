@@ -1,0 +1,40 @@
+<div class="row" style="margin-bottom: 150px;">
+
+    <div class="col-xs-12">
+        <ul class="event-list">
+
+            <li ng-repeat="activity in activities">
+
+                <div>
+
+                <img ng-src="{{activity.origin.artwork_url}}" ng-if="activity.origin.artwork_url != 'null'"/>
+
+                    <img ng-src="{{activity.origin.user.avatar_url}}" ng-if="activity.origin.artwork_url == 'null'"/>
+
+                <div class="info">
+
+                    <h2 class="title">{{activity.origin.user.username}}- {{activity.origin.title}}</h2>
+
+                    <!--<p class="desc">{{result.entity.description | limitTo : 150}}</p>-->
+                    <i class="fa fa-play-circle fa-3x playButton" ng-click="playTrack(activity.origin)"></i>
+                    <ul>
+                        <!--<li>Followers : {{result.entity.followers_count}}<span class="fa fa-users"></span></li>-->
+                        <!--<li>Track Count : {{result.entity.track_count}}<span class="fa fa-music"></span></li>-->
+                    </ul>
+                </div>
+
+                </div>
+
+            </li>
+        </ul>
+    </div>
+
+    <!--Load More Button-->
+    <div class="col-md-12 text-center" ng-show="next_href != 'null'">
+
+            <button class="btn btn-info" ng-click="loadMore()">Load More</button>
+
+    </div>
+
+</div>
+

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>callback</title>
+</head>
+<body>
+<script>
+
+    var patt = new RegExp("access_token");
+
+    if(patt.test(window.location.hash)){
+        var access_token = window.location.hash.replace('#','');
+        access_token = access_token.split('&');
+        access_token = access_token[0].replace('access_token=','');
+        document.write('<meta http-equiv="refresh" content="0; url=./#/index/' + access_token + '">');
+    }else{
+
+    }
+
+</script>
+
+
+</body>
+</html>

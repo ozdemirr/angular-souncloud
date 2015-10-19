@@ -1,8 +1,24 @@
-shared.factory('souncloud', ['$rootScope', '$http', '$q', function($rootScope, $http, $q){
+shared.factory('souncloud', ['$rootScope', '$http', '$q', 'soundcloudConfig', function($rootScope, $http, $q,soundcloudConfig){
 
     var soundcloud = new Object();
 
-    soundcloud.clientId = $rootScope.clientId;
+    soundcloud.clientId = soundcloudConfig.clientId;
+
+    soundcloud.getAccess = function(){
+        if(angular.isDefined(soundcloud.oauth_token)){
+            return "oauth_token="+soundcloud.oauth_token;
+        }else{
+            return "client_id="+soundcloud.clientId;
+        }
+    };
+
+    soundcloud.flushUser = function(){
+
+        delete soundcloud.oauth_token;
+
+        delete soundcloud.userId;
+
+    };
 
     var apiUrl = "http://api.soundcloud.com/";
 
@@ -12,7 +28,7 @@ shared.factory('souncloud', ['$rootScope', '$http', '$q', function($rootScope, $
 
         var text = encodeURIComponent(text);
 
-        var endpoint = 'https://api-v2.soundcloud.com/search/autocomplete?q=' + text + '&results_limit=10&limit=10&offset=0&linked_partitioning=1&client_id=' + soundcloud.clientId;
+        var endpoint = 'https://api-v2.soundcloud.com/search/autocomplete?q=' + text + '&results_limit=10&limit=10&offset=0&linked_partitioning=1&' + soundcloud.getAccess();
 
         $http.get(soundcloud.makeYqlLink(endpoint))
             .then(function(response) {
@@ -37,14 +53,81 @@ shared.factory('souncloud', ['$rootScope', '$http', '$q', function($rootScope, $
     };
 
     soundcloud.getTrackStreamLink = function(track){
-        return "http://api.soundcloud.com/tracks/"+track.id+"/stream?client_id="+soundcloud.clientId;
+        return "http://api.soundcloud.com/tracks/"+track.id+"/stream?" + soundcloud.getAccess();
     };
 
     soundcloud.getTrackDetails = function(trackId){
 
         var deferred = $q.defer();
 
-        var endpoint = apiUrl + "tracks/" + trackId + "?client_id="+ soundcloud.clientId;
+        var endpoint = apiUrl + "tracks/" + trackId + "?" + soundcloud.getAccess();
+
+        $http.get(soundcloud.makeYqlLink(endpoint))
+            .then(function(response) {
+                deferred.resolve(response.data.query.results.json);
+            }, function(response){
+                return $q.reject(response);
+            });
+
+        return deferred.promise;
+
+    };
+
+    soundcloud.me = function(){
+        var deferred = $q.defer();
+
+        var endpoint = apiUrl + "me?" + soundcloud.getAccess();
+
+        $http.get(soundcloud.makeYqlLink(endpoint))
+            .then(function(response) {
+                deferred.resolve(response.data.query.results.json);
+            }, function(response){
+                return $q.reject(response);
+            });
+
+        return deferred.promise;
+    };
+
+    soundcloud.getActivities = function(){
+        var deferred = $q.defer();
+
+        var endpoint = apiUrl + "me/activities?" + soundcloud.getAccess();
+
+        $http.get(soundcloud.makeYqlLink(endpoint))
+            .then(function(response) {
+                deferred.resolve(response.data.query.results.json);
+            }, function(response){
+                return $q.reject(response);
+            });
+
+        return deferred.promise;
+    };
+
+    soundcloud.loadMore = function(cursor){
+        var deferred = $q.defer();
+
+        var endpoint = apiUrl + "me/activities?limit=10&" + cursor + "&" + soundcloud.getAccess();
+
+        $http.get(endpoint)
+            .then(function(response) {
+                deferred.resolve(response.data);
+            }, function(response){
+                return $q.reject(response);
+            });
+
+        return deferred.promise;
+    };
+
+    soundcloud.getMylikes = function(cursor){
+        if(!cursor) {
+            cursor="";
+        }else{
+            cursor = "&" + cursor;
+        }
+
+        var deferred = $q.defer();
+
+        var endpoint = "https://api-v2.soundcloud.com/users/"+soundcloud.userId+"/track_likes?limit=10" + cursor + "&" + soundcloud.getAccess();
 
         $http.get(soundcloud.makeYqlLink(endpoint))
             .then(function(response) {
@@ -60,3 +143,12 @@ shared.factory('souncloud', ['$rootScope', '$http', '$q', function($rootScope, $
     return soundcloud;
 
 }]);
+
+shared.provider('soundcloudConfig', function() {
+    var self = this;
+    this.$get = function() {
+        return {
+            clientId: self.clientId
+        };
+    };
+});

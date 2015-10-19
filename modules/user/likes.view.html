@@ -1,0 +1,36 @@
+<div class="row" style="margin-bottom: 150px;">
+
+    <div class="col-xs-12">
+        <ul class="event-list">
+
+            <li ng-repeat="like in likes">
+
+                <div>
+
+                    <img ng-src="{{like.track.artwork_url}}" ng-if="like.track.artwork_url != 'null'"/>
+
+                    <img ng-src="{{like.track.user.avatar_url}}" ng-if="like.track.artwork_url == 'null'"/>
+
+                    <div class="info">
+
+                        <h2 class="title">{{like.track.user.username}} - {{like.track.title}}</h2>
+
+                        <i class="fa fa-play-circle fa-3x playButton" ng-click="playTrack(like.track)"></i>
+
+                    </div>
+
+                </div>
+
+            </li>
+        </ul>
+    </div>
+
+    <!--Load More Button-->
+    <div class="col-md-12 text-center" ng-show="next_href != 'null'">
+
+        <button class="btn btn-info" ng-click="loadMore()">Load More</button>
+
+    </div>
+
+</div>
+

@@ -5,6 +5,7 @@
     <h2 class="title">{{result.entity.title}}</h2>
 
     <p class="desc">{{result.entity.description | limitTo : 150}}</p>
+    <i class="fa fa-play-circle fa-3x playButton" ng-click="playTrack(result.entity)"></i>
     <ul>
         <!--<li>Followers : {{result.entity.followers_count}}<span class="fa fa-users"></span></li>-->
         <!--<li>Track Count : {{result.entity.track_count}}<span class="fa fa-music"></span></li>-->
